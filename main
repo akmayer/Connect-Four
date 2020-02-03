@@ -21,6 +21,8 @@ def drop():
 
 def check(p, dr, dc, tr, tc):
   counter = 0
+  counter1 = 0
+  counter2 = 0
   for x in range(1, 4):
     try:
       if tr + (x * dr) > 6 or tc + (x * dc) > 6 or tr + (x * dr) < 1  or tc + (x * dc) < 0:
@@ -29,6 +31,7 @@ def check(p, dr, dc, tr, tc):
         break
       elif p[rc(tr, tc)] == p[rc(tr + (x * dr), tc + (x * dc))]:
         counter += 1
+        counter1 = x
     except IndexError:
       counter += 0
   for x in range(1, 4):
@@ -39,11 +42,12 @@ def check(p, dr, dc, tr, tc):
         break
       elif p[rc(tr, tc)] == p[rc(tr - (x * dr), tc - (x * dc))]:
         counter += 1
+        counter2 = x
     except IndexError:
       counter += 0
   if counter >= 3:
-    p[rc(tr, tc)] = [128, 128, 128]
-    s.set_pixels(p)
+    global winningpos
+    winningpos = (p, counter2, counter1, tr, tc, dr, dc)
     return True
   else:
     return False
@@ -58,6 +62,16 @@ def checkall(p, tr, tc):
   else:
     return False
 
+def winrowcolor(p, counter2, counter1, tr, tc, dr, dc):
+  while True:
+    for x in range(-counter2, counter1 + 1):
+      clr = [0, 255, random.randint(0, 255)]
+      random.shuffle(clr)
+      p[rc(tr + (x * dr), tc + (x * dc))] = clr
+      s.set_pixels(p)
+      time.sleep(0.05)
+  
+winningpos = None
 human = 1
 computer = 2
 vscomputer = 3
@@ -122,6 +136,7 @@ s.set_pixels(p)
 player = p1
 while True:
   events = s.stick.get_events()
+  print(events)
   for e in events:
     
     if vscomputer == computer and player == p2:
@@ -136,10 +151,9 @@ while True:
       if(checkall(p, tr, tc)):
         if player == p1:
           print("Player 1 has won!")
-          break
         else:
           print("Computer has won!")
-          break
+        winrowcolor(*winningpos)
       turncounter += 1
       if turncounter % 2 == 1:
         player = p1
@@ -172,10 +186,10 @@ while True:
       if(checkall(p, tr, tc)):
         if player == p1:
           print("Player 1 has won!")
-          break
         else:
           print("Player 2 has won!")
-          break
+        winrowcolor(*winningpos)
+        
       turncounter += 1
       if turncounter % 2 == 1:
         player = p1
@@ -190,3 +204,4 @@ while True:
     print("The game was a draw!")
     break
 
+(True, p, counter2, counter1, tr, tc, dr, dc)
