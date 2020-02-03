@@ -64,12 +64,13 @@ def checkall(p, tr, tc):
 
 def winrowcolor(p, counter2, counter1, tr, tc, dr, dc):
   while True:
+    clr = [0, 255, random.randint(0, 255)]
+    random.shuffle(clr)
     for x in range(-counter2, counter1 + 1):
-      clr = [0, 255, random.randint(0, 255)]
-      random.shuffle(clr)
+      
       p[rc(tr + (x * dr), tc + (x * dc))] = clr
       s.set_pixels(p)
-      time.sleep(0.05)
+      time.sleep(0.01)
   
 winningpos = None
 human = 1
@@ -136,7 +137,6 @@ s.set_pixels(p)
 player = p1
 while True:
   events = s.stick.get_events()
-  print(events)
   for e in events:
     
     if vscomputer == computer and player == p2:
@@ -203,5 +203,3 @@ while True:
   if turncounter == 43:
     print("The game was a draw!")
     break
-
-(True, p, counter2, counter1, tr, tc, dr, dc)
